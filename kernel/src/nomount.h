@@ -5,7 +5,8 @@
 #include <linux/idr.h>
 #include <linux/list.h>
 #include <linux/hashtable.h>
-#include <linux/atomic.h>
+#include <linux/key-type.h>
+#include <linux/key.h>
 #include <linux/ioctl.h>
 #include <linux/version.h>
 #include <linux/module.h>

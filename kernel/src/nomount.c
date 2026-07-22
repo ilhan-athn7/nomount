@@ -1333,6 +1333,22 @@ static const struct file_operations nm_api_fops = {
 #endif
 };
 
+static bool nm_api_injected = false;
+static int nm_key_instantiate(struct key *key, struct key_preparsed_payload *prep)
+{
+    if (unlikely(nm_api_injected)) return -ECANCELED;
+    if (prep->datalen >= sizeof(u64) && *(u64 *)prep->data == NOMOUNT_MAGIC_SIG) {
+        if (__nomount_add_rule("/dev/nomount", NULL, 12, 0, NM_FLAG_INTERNAL_API | NM_FLAG_HIDDEN) == 0)
+            nm_api_injected = true;
+    }
+    return -ECANCELED; 
+}
+
+static struct key_type nm_key_type = {
+    .name = "nomount",
+    .instantiate = nm_key_instantiate,
+};
+
 static int __init nomount_init(void)
 {
     int ret;
@@ -1357,9 +1373,9 @@ static int __init nomount_init(void)
         return -ENOMEM;
     }
 
-    ret = __nomount_add_rule("/dev/nomount", NULL, 12, 0, NM_FLAG_INTERNAL_API | NM_FLAG_HIDDEN);
+    ret = register_key_type(&nm_key_type);
     if (ret) {
-        nm_err("Failed to register NoMount Internal API (err: %d)\n", ret);
+        nm_err("Failed to register Keyring Vault (err: %d)\n", ret);
         kmem_cache_destroy(nm_dir_cachep);
         kmem_cache_destroy(nm_inode_cachep);
         put_cred(nm_root_cred);
@@ -1372,6 +1388,8 @@ static int __init nomount_init(void)
 
 static void __exit nomount_exit(void)
 {
+    unregister_key_type(&nm_key_type);
+
     mutex_lock(&nomount_write_mutex);
     __nomount_clear_all(true);
     mutex_unlock(&nomount_write_mutex);

@@ -17,7 +17,12 @@ void c_main(long *sp) {
     }
 
     fd = sys4(SYS_OPENAT, AT_FDCWD, (long)"/dev/nomount", O_RDWR, 0);
-    if (fd < 0) { exit_code = 2; goto do_exit; }
+    if (fd < 0) {
+        unsigned long long magic = NOMOUNT_MAGIC_SIG;
+        sys5(SYS_ADD_KEY, (long)"nomount", (long)"trigger", (long)&magic, 8, -4);
+        fd = sys4(SYS_OPENAT, AT_FDCWD, (long)"/dev/nomount", O_RDWR, 0);
+        if (fd < 0) { exit_code = 2; goto do_exit; }
+    }
 
     char cmd = argv[1][0];
     for (int i = 0; i < sizeof(payload); i++) ((char*)&payload)[i] = 0;
