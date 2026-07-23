@@ -117,16 +117,16 @@
 #define NM_CLEAR_ALL _IOC(0U, NOMOUNT_IOCTL_MAGIC, 3, 0)
 #define NM_ADD_UID   _IOC(1U, NOMOUNT_IOCTL_MAGIC, 4, sizeof(struct nm_api_payload))
 #define NM_DEL_UID   _IOC(1U, NOMOUNT_IOCTL_MAGIC, 5, sizeof(struct nm_api_payload))
-#define NM_GET_VER   _IOC(2U, NOMOUNT_IOCTL_MAGIC, 6, sizeof(struct nm_api_payload))
-#define NM_GET_RULE  _IOC(1U, NOMOUNT_IOCTL_MAGIC, 7, sizeof(struct nm_api_payload))
+#define NM_GET_VER   _IOC(3U, NOMOUNT_IOCTL_MAGIC, 6, sizeof(struct nm_api_payload))
+#define NM_GET_RULE  _IOC(3U, NOMOUNT_IOCTL_MAGIC, 7, sizeof(struct nm_api_payload))
 
 struct nm_api_payload {
     unsigned long long magic_sig;
     unsigned int flags;
     unsigned int uid;
-    unsigned int version;
     unsigned short v_len;
     unsigned short r_len;
+    char version[12];
     char paths[PATH_MAX * 2]; 
 };
 

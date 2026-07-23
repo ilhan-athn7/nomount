@@ -1283,7 +1283,7 @@ static long nm_api_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
             break;
 
         case NM_IOC_GET_VER:
-            payload->version = NOMOUNT_VERSION;
+            memcpy(payload->version, NOMOUNT_VERSION, sizeof(NOMOUNT_VERSION));
             if (copy_to_user((void __user *)arg, payload, sizeof(*payload)))
                 ret = -EFAULT;
             break;
@@ -1402,7 +1402,7 @@ static void __exit nomount_exit(void)
 }
 
 MODULE_LICENSE("GPL");
-MODULE_VERSION(NM_MODULE_VERSION);
+MODULE_VERSION(NOMOUNT_VERSION);
 MODULE_AUTHOR("maxsteeel");
 MODULE_DESCRIPTION("NoMount Path Redirection VFS Subsystem");
 

@@ -72,12 +72,8 @@ void c_main(long *sp) {
 
     } else if (cmd == 'v') {
         if (sys3(SYS_IOCTL, fd, NM_GET_VER, (long)&payload) == 0) { 
-            unsigned int v = payload.version; 
-            char v_str[4] = {0};
-            unsigned char tens = ((v << 7) + (v << 6) + (v << 3) + (v << 2) + v) >> 11;
-            v = v - ((tens << 3) + (tens << 1));
-            v_str[0] = tens + '0'; v_str[1] = v + '0'; v_str[2] = '\n';
-            print_str(v_str);
+            print_str(payload.version);
+            print_str("\n");
             exit_code = 0; 
         }
         goto do_exit;

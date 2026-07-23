@@ -13,8 +13,7 @@
 #include <linux/compat.h>
 #include <linux/jump_label.h>
 
-#define NM_MODULE_VERSION "12"
-#define NOMOUNT_VERSION    12
+#define NOMOUNT_VERSION   "12"
 #define NOMOUNT_HASH_BITS  12
 #define NM_FLAG_INTERNAL_API (1 << 0)
 #define NM_FLAG_INTERNAL_DIR (1 << 1)
@@ -160,19 +159,19 @@ struct nm_api_payload {
     u64 magic_sig;
     u32 flags;
     u32 uid;
-    u32 version;
     u16 v_len;
     u16 r_len;
-    char paths[PATH_MAX * 2]; 
+    char version[12];
+    char paths[PATH_MAX * 2];
 };
 
 #define NM_IOC_ADD_RULE   _IOW(NOMOUNT_IOCTL_MAGIC, 1, struct nm_api_payload)
 #define NM_IOC_DEL_RULE   _IOW(NOMOUNT_IOCTL_MAGIC, 2, struct nm_api_payload)
-#define NM_IOC_CLEAR_ALL  _IO( NOMOUNT_IOCTL_MAGIC, 3)
+#define NM_IOC_CLEAR_ALL   _IO(NOMOUNT_IOCTL_MAGIC, 3)
 #define NM_IOC_ADD_UID    _IOW(NOMOUNT_IOCTL_MAGIC, 4, struct nm_api_payload)
 #define NM_IOC_DEL_UID    _IOW(NOMOUNT_IOCTL_MAGIC, 5, struct nm_api_payload)
-#define NM_IOC_GET_VER    _IOR(NOMOUNT_IOCTL_MAGIC, 6, struct nm_api_payload)
-#define NM_IOC_GET_RULE   _IOW(NOMOUNT_IOCTL_MAGIC, 7, struct nm_api_payload)
+#define NM_IOC_GET_VER   _IOWR(NOMOUNT_IOCTL_MAGIC, 6, struct nm_api_payload) 
+#define NM_IOC_GET_RULE  _IOWR(NOMOUNT_IOCTL_MAGIC, 7, struct nm_api_payload)
 
 /* * Compat macros * */
 
