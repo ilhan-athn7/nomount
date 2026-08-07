@@ -112,7 +112,6 @@ enum {
     NM_CMD_DEL_UID,
     NM_CMD_GET_LIST,
     NM_CMD_GET_UIDS,
-    NM_CMD_ADD_RULE_BATCH,
 };
 
 struct nm_ipc_payload {
@@ -120,12 +119,10 @@ struct nm_ipc_payload {
     unsigned int cmd;
     unsigned int flags;
     unsigned int target_uid;
-    unsigned short v_len;
-    unsigned short r_len;
     int status;
     unsigned int arg1;
     unsigned int data_size;
-    char buffer[3900];
+    char buffer[4072];
 } __attribute__((packed));
 
 /* --- UTILS --- */

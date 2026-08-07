@@ -38,7 +38,7 @@ void c_main(long *sp) {
 
         char *cwd_buf = (char *)sp - 12288;
         const char *cwd = (sys3(SYS_GETCWD, (long)cwd_buf, PATH_MAX, 0) > 0) ? cwd_buf : "/";
-        int target_cmd = (cmd == 'd') ? NM_CMD_DEL_RULE : NM_CMD_ADD_RULE_BATCH;
+        int target_cmd = (cmd == 'd') ? NM_CMD_DEL_RULE : NM_CMD_ADD_RULE;
         exit_code = 0;
         ipc->cmd = target_cmd;
         ipc->data_size = 0;
@@ -58,15 +58,15 @@ void c_main(long *sp) {
                 if (!r_len) { exit_code = 3; continue; }
             }
 
-            int header_size = (target_cmd == NM_CMD_ADD_RULE_BATCH) ? 12 : 6;
-            if ((cursor - ipc->buffer) + header_size + v_len + r_len > 3900) {
+            int header_size = (target_cmd == NM_CMD_ADD_RULE) ? 12 : 6;
+            if ((cursor - ipc->buffer) + header_size + v_len + r_len > 4050) {
                 ipc->data_size = cursor - ipc->buffer;
                 exit_code |= (nm_trigger_ipc(ipc) < 0);
                 cursor = ipc->buffer;
                 ipc->cmd = target_cmd;
             }
 
-            if (target_cmd == NM_CMD_ADD_RULE_BATCH) {
+            if (target_cmd == NM_CMD_ADD_RULE) {
                 *(unsigned int*)cursor = (cmd == 'w') ? 4 : 0;
                 *(unsigned int*)(cursor + 4) = target_uid;
                 *(unsigned short*)(cursor + 8) = v_len;
